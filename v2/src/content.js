@@ -1,19 +1,35 @@
 const EXTENSION_NAME = 'YouTube ZapAd';
 const EXTENSION_VERSION = '1.0.0';
 
-// Variables globales
+let isZapAdEnabled = true;
 let adObserver;
 let zapButtonInterval;
 
-// Función mejorada para detectar si se está reproduciendo un anuncio
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === "disable") {
+        isZapAdEnabled = false;
+        stopAllZapFunctions();
+    } else if (request.action === "enable") {
+        isZapAdEnabled = true;
+        initAdZapper();
+    }
+});
+
+function stopAllZapFunctions() {
+    stopAdObserver();
+    clearInterval(zapButtonInterval);
+    hideCustomZapButton();
+    // Detener cualquier otra función que esté corriendo
+}
+
 function isAdPlaying() {
-    // Buscar elementos específicos de anuncios
+    if (!isZapAdEnabled) return false;
+    
     const adBadge = document.querySelector('.ytp-ad-simple-ad-badge');
     const adOverlay = document.querySelector('.ytp-ad-overlay-container');
     const adSkipButton = document.querySelector('.ytp-ad-skip-button');
     const adTextOverlay = document.querySelector('.ytp-ad-text-overlay');
     
-    // Verificar si el video actual tiene la clase 'ad-showing' o 'ad-interrupting'
     const videoPlayer = document.querySelector('video');
     const playerAds = document.querySelector('.video-ads');
     const isVideoAd = videoPlayer && (
@@ -22,7 +38,6 @@ function isAdPlaying() {
         (playerAds && playerAds.children.length > 0)
     );
 
-    // Verificar la URL del video en busca de parámetros de anuncios
     const videoSrc = videoPlayer ? videoPlayer.src : '';
     const isAdUrl = videoSrc.includes('googlevideo.com/videoplayback') && 
                     (videoSrc.includes('&adformat=') || videoSrc.includes('&ad_type='));
@@ -30,8 +45,9 @@ function isAdPlaying() {
     return !!(adBadge || adOverlay || adSkipButton || adTextOverlay || isVideoAd || isAdUrl);
 }
 
-// Función principal para controlar los anuncios
 function controlAds() {
+    if (!isZapAdEnabled) return;
+
     const video = document.querySelector('video');
     
     if (isAdPlaying()) {
@@ -45,18 +61,18 @@ function controlAds() {
     } else {
         if (video && video.muted) {
             video.muted = false;
-            video.volume = 1; // O el volumen anterior si lo guardaste
+            video.volume = 1;
         }
         hideCustomZapButton();
     }
     
-    // Ocultar anuncios en la barra lateral
     const adElements = document.querySelectorAll('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer');
     adElements.forEach(ad => ad.style.display = 'none');
 }
 
-// Función para mostrar botón personalizado para zappear
 function showCustomZapButton() {
+    if (!isZapAdEnabled) return;
+
     let customZapButton = document.getElementById('zap-ad-button');
     if (!customZapButton) {
         customZapButton = document.createElement('button');
@@ -83,7 +99,6 @@ function showCustomZapButton() {
     customZapButton.style.display = 'block';
 }
 
-// Función para ocultar botón personalizado
 function hideCustomZapButton() {
     const customZapButton = document.getElementById('zap-ad-button');
     if (customZapButton) {
@@ -91,14 +106,16 @@ function hideCustomZapButton() {
     }
 }
 
-// Función para ocultar overlays de anuncios
 function hideAdOverlays() {
+    if (!isZapAdEnabled) return;
+
     const overlays = document.querySelectorAll('.ytp-ad-overlay-container, .ytp-ad-player-overlay');
     overlays.forEach(overlay => overlay.style.display = 'none');
 }
 
-// Función para zappear el anuncio
 function zapAd() {
+    if (!isZapAdEnabled) return;
+
     const video = document.querySelector('video');
     const skipButton = document.querySelector('.ytp-ad-skip-button');
     if (skipButton) {
@@ -108,7 +125,6 @@ function zapAd() {
             if (isFinite(video.duration) && video.duration > 0) {
                 video.currentTime = video.duration;
             } else {
-                // Si la duración no es válida, intenta avanzar 30 segundos
                 video.currentTime = video.currentTime + 30;
             }
         } catch (error) {
@@ -117,56 +133,81 @@ function zapAd() {
     }
 }
 
-// Iniciar observación de cambios en el DOM
 function startAdObserver() {
     adObserver = new MutationObserver(controlAds);
     adObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-// Detener observación de cambios en el DOM
 function stopAdObserver() {
     if (adObserver) {
         adObserver.disconnect();
     }
 }
 
-// Función para reiniciar el observador
 function restartAdObserver() {
     stopAdObserver();
     startAdObserver();
 }
 
-// Iniciar intervalo para controlar anuncios
 function startAdControlInterval() {
     setInterval(controlAds, 1000);
 }
 
-// Iniciar intervalo para forzar el botón de zappear
 function startForceZapInterval() {
     zapButtonInterval = setInterval(() => {
-        if (isAdPlaying()) {
+        if (isZapAdEnabled && isAdPlaying()) {
             zapAd();
         }
     }, 500);
 }
 
-// Función para registrar información de la extensión
 function logExtensionInfo() {
     console.log(`${EXTENSION_NAME} v${EXTENSION_VERSION} está activo y listo para zappear anuncios.`);
 }
 
-// Función de inicialización
+function simulateUserActivity() {
+    if (!isZapAdEnabled) return;
+
+    const video = document.querySelector('video');
+    if (video) {
+        const event = new MouseEvent('mousemove', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true,
+            'clientX': Math.floor(Math.random() * window.innerWidth),
+            'clientY': Math.floor(Math.random() * window.innerHeight)
+        });
+        document.dispatchEvent(event);
+
+        const progressBar = document.querySelector('.ytp-progress-bar');
+        if (progressBar) {
+            progressBar.dispatchEvent(new MouseEvent('mouseover', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            }));
+        }
+
+        console.log('Actividad de usuario simulada');
+    }
+}
+
+function startActivitySimulation() {
+    setInterval(simulateUserActivity, 300000);
+}
+
 function initAdZapper() {
+    if (!isZapAdEnabled) return;
+
     logExtensionInfo();
     startAdObserver();
     startAdControlInterval();
     startForceZapInterval();
+    startActivitySimulation();
     
-    // Reiniciar el observador cada 30 segundos para asegurar que sigue funcionando
     setInterval(restartAdObserver, 30000);
 }
 
-// Iniciar el zappeador de anuncios cuando la página se carga completamente
 if (document.readyState === 'complete') {
     initAdZapper();
 } else {

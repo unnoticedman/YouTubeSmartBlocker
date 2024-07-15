@@ -1,10 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>YouTube Ad Controller</title>
+    <title>YouTube ZapAd</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .donate-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #0070BA;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>YouTube Ad Controller</h1>
-  <p>Esta extensión está activa en YouTube.</p>
+    <h1>YouTube ZapAd</h1>
+    <div class="control">
+        <span>Activar ZapAd:</span>
+        <label class="switch">
+            <input type="checkbox" id="activateExtension" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+    <a href="https://www.paypal.com/donate/?business=VD9J8YKGQ3PDY&no_recurring=1&item_name=Ay%C3%BAdame+a+seguir+desarrollando+aplicaciones+%C3%BAtiles+que+permitan+que+tu+experiencia+por+Internet+sea+m%C3%A1s+agradable.+&currency_code=USD" target="_blank" class="donate-button">
+        Donar con PayPal
+    </a>
+    <script src="popup.js"></script>
 </body>
 </html>
