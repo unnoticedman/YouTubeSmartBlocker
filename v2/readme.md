@@ -1,14 +1,14 @@
-# YouTube ZapAd
+# YouTube SmartBlocker
 
-YouTube ZapAd es una extensión de navegador que mejora tu experiencia en YouTube al eliminar interrupciones publicitarias de forma rápida y eficiente.
+YouTube SmartBlocker es una extensión de navegador que mejora tu experiencia en YouTube al eliminar interrupciones publicitarias de forma rápida y eficiente.
 
 ## Características
 
 - Detecta automáticamente anuncios en videos de YouTube.
 - Silencia instantáneamente los anuncios de video.
 - Oculta anuncios molestos en la barra lateral.
-- Proporciona un botón "⚡ Zap Ad" para eliminar anuncios con un solo clic.
-- Intenta "zappear" automáticamente los anuncios cuando es posible.
+- Proporciona un botón "⚡ SmartBlocker" para eliminar anuncios con un solo clic.
+- Intenta "saltar" automáticamente los anuncios cuando es posible.
 
 ## Instalación
 
@@ -19,11 +19,11 @@ YouTube ZapAd es una extensión de navegador que mejora tu experiencia en YouTub
 
 ## Uso
 
-Una vez instalada, YouTube ZapAd trabajará silenciosamente en segundo plano para mejorar tu experiencia en YouTube. Cuando se detecte un anuncio, verás un botón verde "⚡ Zap Ad" que te permitirá eliminarlo instantáneamente.
+Una vez instalada, YouTube SmartBlocker trabajará silenciosamente en segundo plano para mejorar tu experiencia en YouTube. Cuando se detecte un anuncio, verás un botón verde "⚡ SmartBlocker" que te permitirá eliminarlo instantáneamente.
 
 ## Contribuir
 
-¡Tus contribuciones son bienvenidas! Si tienes ideas para mejorar YouTube ZapAd, por favor abre un issue para discutir los cambios que te gustaría hacer.
+¡Tus contribuciones son bienvenidas! Si tienes ideas para mejorar YouTube SmartBlocker, por favor abre un issue para discutir los cambios que te gustaría hacer.
 
 ## Licencia
 
